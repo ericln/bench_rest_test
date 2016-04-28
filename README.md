@@ -5,7 +5,7 @@ Node.Js
 Npm
 
 ## How to run 
-in the command linn run `npm install` to install all the module dependencies. 
+in the command line run `npm install` to install all the module dependencies. 
 
 ### Unit Test
 Run `npm test` to execute unit test
