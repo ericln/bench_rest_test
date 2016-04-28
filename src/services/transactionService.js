@@ -4,7 +4,7 @@ import transactionReportService from './transactionReportService';
 
 import async from 'async';
 
-function getTransactionInfo(done) {
+function getAllReport(done) {
 
   async.waterfall(
     [
@@ -41,6 +41,9 @@ function _simpleTransactionsMethodWrap(func, done) {
     [
       (callback) => transactionSource.getAllTransactions(callback),
       (transactions, callback) => {
+        callback(null, transactionCleaner.applyAllCleanups(transactions));
+      },
+      (transactions, callback) => {
         callback(null, func(transactions));
       }
     ],
@@ -68,7 +71,7 @@ function _generateSummary(transactions, done) {
 
 
 export default {
-  getTransactionInfo,
+  getAllReport,
   getTotalBalance,
   getExpenseByCategory,
   getDailyRunningTotal

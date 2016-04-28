@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "babel-node app.js",
+    "start": "babel-node appMenu.js",
     "test": "mocha --compilers js:babel-core/register --recursive"
   },
   "author": "",
@@ -20,6 +20,7 @@
     "babel-core": "^6.5.2",
     "babel-preset-es2015": "^6.5.0",
     "chai": "^3.5.0",
+    "extended-terminal-menu": "^2.1.4",
     "lodash": "^4.11.0",
     "mocha": "^2.4.5",
     "moment": "^2.13.0",

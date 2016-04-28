@@ -18,6 +18,9 @@ a lot more unit test that can be written and scenarios to cover.
 `npm start` 
 ```
 
+The app is a simple select menu that will basically output the desired reports. 
+Just for fun, this can be anything that calls the report methods.
+
 ## To do, and more
 - More unit test, the unit test written so far is just an example of what can be done.
 - More defensive coding and error handling.
