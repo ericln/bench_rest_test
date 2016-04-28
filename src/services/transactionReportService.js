@@ -6,7 +6,7 @@ function expenseByCategory(transactions) {
 
   let result = _.mapValues(transByLedger, (transactions) => {
     let totalExpense = _.sumBy(transactions, (tran) => {
-      return Number(tran.Amount);
+      return _roundToTwo(Number(tran.Amount));
     });
 
     return {
@@ -32,7 +32,7 @@ function dailyRunningTotal(transactions) {
       currentDate = item.Date;
     }
 
-    let runningTotal = sum + Number(item.Amount);
+    let runningTotal = _roundToTwo(Number(sum) + Number(item.Amount));
     runningTotalSummary[currentDate] = runningTotal;
 
     return runningTotal;
@@ -46,7 +46,11 @@ function totalBalance(transactions) {
     return Number(tran.Amount);
   });
 
-  return totalBalance;
+  return _roundToTwo(totalBalance);
+}
+
+function _roundToTwo(value) {
+  return(Math.round(value * 100) / 100);
 }
 
 export default {
