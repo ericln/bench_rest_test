@@ -2,9 +2,9 @@ import transactionSource from '../sources/transactionSource';
 import transactionCleaner from './transactionCleanser';
 import async from 'async';
 import _ from 'lodash';
+import moment from 'moment';
 
 function getTransactionInfo(done) {
-  let resultSummary = {};
 
   async.waterfall(
     [
@@ -12,15 +12,7 @@ function getTransactionInfo(done) {
       (transactions, callback) => {
         callback(null, transactionCleaner.applyAllCleanups(transactions));
       },
-      (transactions, callback) => {
-        let totalBalance = calculateBalance(transactions);
-        let groupExpense = expenseByCategory(transactions);
-
-        callback(null, {
-          totalBalance,
-          groupExpense
-        });
-      }
+      (transactions, callback) => _generateSummary(transactions, callback)
     ],
     (err, result) => {
       if(err) {
@@ -30,6 +22,18 @@ function getTransactionInfo(done) {
       done(null, result);
     }
   )
+}
+
+function _generateSummary(transactions, done) {
+  let totalBalance = calculateBalance(transactions);
+  let groupExpense = expenseByCategory(transactions);
+  let runningTotal = calculateDailyRunningTotal(transactions);
+
+  done(null, {
+    totalBalance,
+    groupExpense,
+    runningTotal
+  });
 }
 
 function expenseByCategory(transactions) {
@@ -49,6 +53,28 @@ function expenseByCategory(transactions) {
   return result;
 }
 
+
+function calculateDailyRunningTotal(transactions) {
+  let sortedTransactions = _.orderBy(
+    transactions, (tran) => moment(tran.Date), 'asc'
+  );
+
+  let currentDate;
+  let runningTotalSummary = {};
+
+  _.reduce(sortedTransactions, (sum, item) => {
+    if(!currentDate || currentDate != item.Date){
+      currentDate = item.Date;
+    }
+
+    let runningTotal = sum + Number(item.Amount);
+    runningTotalSummary[currentDate] = runningTotal;
+
+    return runningTotal;
+  }, 0);
+
+  return runningTotalSummary;
+}
 
 function calculateBalance(transactions) {
   let totalBalance = _.sumBy(transactions, (tran) => {
