@@ -12,7 +12,15 @@ function getTransactionInfo(done) {
       (transactions, callback) => {
         callback(null, transactionCleaner.applyAllCleanups(transactions));
       },
-      (transactions, callback) => calculateBalance(transactions, callback)
+      (transactions, callback) => {
+        let totalBalance = calculateBalance(transactions);
+        let groupExpense = expenseByCategory(transactions);
+
+        callback(null, {
+          totalBalance,
+          groupExpense
+        });
+      }
     ],
     (err, result) => {
       if(err) {
@@ -24,16 +32,31 @@ function getTransactionInfo(done) {
   )
 }
 
-function calculateBalance(transactions, done) {
-  console.log(transactions);
-  let totalBalance = _.sumBy(transactions, (tran) => {
-    return Number(tran.Amount);
+function expenseByCategory(transactions) {
+  let transByLedger = _.groupBy(transactions, 'Ledger');
+
+  let result = _.mapValues(transByLedger, (transactions) => {
+    let totalExpense = _.sumBy(transactions, (tran) => {
+      return Number(tran.Amount);
+    });
+
+    return {
+      totalExpense,
+      transactions
+    }
   });
-  console.log(totalBalance);
-  done();
+
+  return result;
 }
 
 
+function calculateBalance(transactions) {
+  let totalBalance = _.sumBy(transactions, (tran) => {
+    return Number(tran.Amount);
+  });
+
+  return totalBalance;
+}
 
 export default {
   getTransactionInfo,

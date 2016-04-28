@@ -1,7 +1,6 @@
 import async from 'async';
+import util from 'util';
 import transactionService from './src/services/transactionService';
-
-
 
 function run() {
   transactionService.getTransactionInfo((err, result) => {
@@ -9,7 +8,9 @@ function run() {
       console.log(err);
     }
 
-    console.log(result);
+
+
+    console.log(util.inspect(result, false, null));
   })
 }
 
