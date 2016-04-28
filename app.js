@@ -3,7 +3,7 @@ import util from 'util';
 import transactionService from './src/services/transactionService';
 
 function run() {
-  transactionService.getTransactionInfo((err, result) => {
+  transactionService.getDailyRunningTotal((err, result) => {
     if(err) {
       console.log(err);
     }

@@ -24,6 +24,36 @@ function getTransactionInfo(done) {
   )
 }
 
+function getExpenseByCategory(done) {
+  _simpleTransactionsMethodWrap(transactionReportService.expenseByCategory, done);
+}
+
+function getDailyRunningTotal(done) {
+  _simpleTransactionsMethodWrap(transactionReportService.dailyRunningTotal, done);
+}
+
+function getTotalBalance(done) {
+  _simpleTransactionsMethodWrap(transactionReportService.totalBalance, done);
+}
+
+function _simpleTransactionsMethodWrap(func, done) {
+  async.waterfall(
+    [
+      (callback) => transactionSource.getAllTransactions(callback),
+      (transactions, callback) => {
+        callback(null, func(transactions));
+      }
+    ],
+    (err, result) => {
+      if(err) {
+        return done(err);
+      }
+
+      done(null, result);
+    }
+  )
+}
+
 function _generateSummary(transactions, done) {
   let totalBalance = transactionReportService.totalBalance(transactions);
   let groupExpense = transactionReportService.expenseByCategory(transactions);
@@ -36,6 +66,10 @@ function _generateSummary(transactions, done) {
   });
 }
 
+
 export default {
-  getTransactionInfo
+  getTransactionInfo,
+  getTotalBalance,
+  getExpenseByCategory,
+  getDailyRunningTotal
 }
