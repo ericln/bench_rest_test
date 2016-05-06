@@ -8,8 +8,6 @@ function run() {
       console.log(err);
     }
 
-
-
     console.log(util.inspect(result, false, null));
   })
 }
